@@ -1,0 +1,262 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}New {%if publication.is_article%}Article{%else%}eBook{%endif%} (Step 3) | Tale{%endblock%}
+
+{%block css%}
+<link rel="stylesheet" href="{%static 'assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}">
+{%endblock%}
+
+{%block content%}
+<main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark bg-dark" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+      <div class="container content-space-1 content-space-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">New {%if publication.is_article%}Article{%else%}eBook{%endif%}</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Details</li>
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Image</li>
+                <li class="breadcrumb-item fw-bold active" aria-current="page">{%if publication.is_article%}Article{%else%}eBook{%endif%} Pricing</li>
+              </ol>
+            </nav>
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="d-grid gap-3 gap-lg-5">
+            <!-- Card -->
+            <div class="card">
+              <div class="card-header border-bottom">
+                <h4 class="card-header-title">New {%if publication.is_article%}Article{%else%}eBook{%endif%} / {%if publication.is_article%}Article{%else%}eBook{%endif%} Pricing</h4>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body">
+                <form method="POST" id="pricing-form">
+                  {%csrf_token%}
+
+                  <!-- Form -->
+                  <div class="row mb-3">
+                    <label for="locationLabel" class="col-sm-3 col-form-label form-label">{%if publication.is_article%}Article{%else%}eBook{%endif%} Pricing</label>
+
+                    <div class="col-sm-9">
+                      <!-- Select -->
+                      <div class="tom-select-custom mb-3">
+                        <select name="publication_pricing" class="js-select form-select" required id="id_publication_pricing" onchange="showAmount();">
+
+                          <option value="0" {%if not publication.is_paygated%}selected{%endif%}>Free</option>
+
+                          <option value="1" {%if publication.is_paygated%}selected{%endif%}>Pro</option>
+
+                        </select>
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  {%if publication.is_article%}
+                  <p class="card-text" id="disclaimer" style="display: none">You have paygated this publication. Only your paying subscribers will be able to view this publication. Please set your subscription fee below:</p>
+                  {%else%}
+                  <p class="card-text" id="disclaimer" style="display: none">You have paygated this publication. Readers will need to pay to download this publication. Please set an amount below:</p>
+                  {%endif%}
+
+                  <!-- Form -->
+                  <div id="amount-input" style="display: none">
+                    <div class="row mb-4">
+                      <label for="id_amount" class="col-sm-3 col-form-label form-label">Amount{%if publication.is_article%} <small>(per month)</small>{%endif%}</label>
+
+                      <div class="col-sm-9">
+                        <input type="number" class="form-control" name="amount" id="id_amount" value="{{publication.amount}}">
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  {%if user.is_free%}
+                  <p class="card-text">Note: You will need to upgrade your account to <a href="{%url 'website:pricing'%}" class="text-decoration-underline" target="_blank">the pro plan</a> in order to publish paygated articles/eBooks. You may click next below to continue or cancel to delete this publication.</p>
+                  {%endif%}
+
+                
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <div class="card-footer pt-0">
+                <div class="d-flex justify-content-between gap-3">
+                  <a class="link" href="{%url 'website:step-2' publication.pk%}">
+                    <i class="bi-chevron-left small ms-1"></i> Go back
+                  </a>
+
+                  <div>
+                    <a class="btn btn-white float-right" href="{%url 'website:ajax-delete-publication' publication.pk%}">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="pricing-submission">Next</button>
+                  </div>
+                </div>
+              </div>
+              <!-- End Footer -->
+              </form>
+            </div>
+            <!-- End Card -->
+
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content -->
+</main>
+
+<script type="text/javascript">
+  var pubPricing = document.getElementById("id_publication_pricing").value;
+  if (pubPricing === '0') {
+    document.getElementById('amount-input').style.display = "none";
+    document.getElementById('disclaimer').style.display = "none";
+  }
+  else {
+    document.getElementById('amount-input').style.display = "block";
+    document.getElementById('disclaimer').style.display = "block";
+  }
+
+  function showAmount() {
+    var pubPricing = document.getElementById("id_publication_pricing").value;
+    if (pubPricing === '0') {
+      document.getElementById('amount-input').style.display = "none";
+      document.getElementById('disclaimer').style.display = "none";
+    }
+    else {
+      document.getElementById('amount-input').style.display = "block";
+      document.getElementById('disclaimer').style.display = "block";
+    }
+  }
+</script>
+{%endblock%}
+
+{%block plugins%}
+<script src="{%static 'assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+{%endblock%}
+
+{%block js%}
+// INITIALIZATION OF SELECT
+// =======================================================
+HSCore.components.HSTomSelect.init('.js-select', {
+  render: {
+    'option': function(data, escape) {
+      return data.optionTemplate || `<div>${data.text}</div>>`
+    },
+    'item': function(data, escape) {
+      return data.optionTemplate || `<div>${data.text}</div>>`
+    }
+  }
+})
+{%endblock%}
+
+{%block payfast%}
+<script src="{%static 'assets/js/jquery.min.js'%}"></script>
+<script src="https://www.payfast.co.za/onsite/engine.js"></script> 
+
+<script type="text/javascript">
+  
+  $('#pricing-form').on('submit', function(event){
+      event.preventDefault();
+      document.getElementById('pricing-submission').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+      $.ajax({
+          url : '{%url "website:step-3" publication.pk%}',
+          type : 'POST',
+          data : { publication_pricing : $('#id_publication_pricing').val(), amount : $('#id_amount').val()},
+
+          success : function(json){
+            var pubPricing = document.getElementById("id_publication_pricing").value;
+    
+              {%if user.is_free%}
+                if (pubPricing === '0') {
+                  {%if publication.is_article%}
+                    window.location.replace("/write/{{publication.pk}}/preview/");
+                  {%else%}
+                    window.location.replace("/your-ebooks/");
+                  {%endif%}
+                }
+                else {
+                  window.payfast_do_onsite_payment({"uuid":"{{identifier}}"}, function (result) {
+                    if (result === true) {
+                      window.location.replace("/ajax/pro-upgrade/" + json.pk + "/");
+                    }
+                    else {
+                      location.reload();
+                      window.location.replace("/write/{{publication.pk}}/step-3/");
+                    }
+                  }); 
+                }
+              {%else%}
+                {%if publication.is_article%}
+                  window.location.replace("/write/{{publication.pk}}/preview/");
+                {%else%}
+                  window.location.replace("/your-ebooks/");
+                {%endif%}  
+              {%endif%}
+          }
+      });
+  });
+
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+</script>
+{%endblock%}

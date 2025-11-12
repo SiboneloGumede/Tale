@@ -1,0 +1,196 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}Our Story | Tale{%endblock%}
+
+
+{%block content%}
+<main id="content" role="main">
+  <!-- Gallery -->
+  <div class="container content-space-t-3 content-space-b-1">
+    <div class="w-lg-75 text-center mx-lg-auto">
+      <!-- Heading -->
+      <div class="">
+        <h1 class="display-5">Ignite your passion</h1>
+        <!-- <p class="lead mb-0">Tale is inspired by the belief that Africa’s stories deserve to be seen, read, and celebrated everywhere. With a deep respect for the continent’s rich storytelling heritage, Tale is a digital publishing platform for African writers, authors, and journalists to publish, connect, and grow.</p> -->
+        <p class="lead mb-0">Inspired by a deep respect for the continent’s rich storytelling heritage, Tale is a digital   publishing platform for African writers, authors, and journalists to publish, connect, and grow.
+Our mission is to amplify African storytelling and ideas by creating opportunities for emerging and established voices to share their work, reach readers globally, and shape the future of publishing.</p>
+      </div>
+      <!-- End Heading -->
+    </div>
+
+    <div class="row gx-3">
+      <div class="col">
+        <div class="bg-img-start" style="background-image: url({%static 'assets/img/tale/about-us.svg' %}); height: 30rem;"></div>
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+  <!-- End Gallery -->
+
+  <!-- Contacts -->
+  <div class="position-relative">
+    <div class="bg-dark" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+      <div class="container content-space-t-2 content-space-t-lg-3 content-space-b-1">
+        <!-- Heading -->
+        <div class="w-lg-50 text-center mx-lg-auto mb-7">
+          <span class="text-cap text-white-70">Join a thriving publishing community</span>
+          <h2 class="text-white lh-base">Explore new perspectives, access exclusive resources, and grow your presence as a storyteller.</h2>
+        </div>
+        <!-- End Heading -->
+
+        <div class="mx-auto" style="max-width: 35rem;">
+          <!-- Card -->
+          <div class="card zi-2">
+            <div class="card-body">
+              <!-- Form -->
+              <form action="{%url 'website:contact'%}" id="contact-form" method="POST">
+                {%csrf_token%}
+                <div class="row">
+                  <div class="col-sm-12">
+                    <!-- Form -->
+                    <div class="mb-4">
+                      <label class="form-label" for="id_name">Your name</label>
+                      <input type="text" class="form-control form-control-lg" name="name" id="id_name" placeholder="Your name" aria-label="Your name" required>
+                    </div>
+                    <!-- End Form -->
+                  </div>
+                  <!-- End Col -->
+                </div>
+                <!-- End Row -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                  <label class="form-label" for="id_email">Email address</label>
+                  <input type="email" class="form-control form-control-lg" name="email" id="id_email" placeholder="email@site.com" aria-label="email@site.com" required>
+                </div>
+                <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                  <label class="form-label" for="id_phone">Your number</label>
+                  <input type="text" class="form-control form-control-lg" name="phone" id="id_phone" placeholder="Your number" aria-label="Your number" required>
+                </div>
+                <!-- End Form -->
+
+                <!-- Form -->
+                <div class="mb-4">
+                  <label class="form-label" for="id_message">Your message</label>
+                  <textarea class="form-control form-control-lg" name="message" id="id_message" placeholder="Hi there! Tell us which hybrid publishing services you’re interested in, and our team will get back to you shortly." aria-label="Hi, I would like to join Tale. . .t" rows="4" required></textarea>
+                </div>
+                <!-- End Form -->
+
+                <!-- Check -->
+                <div class="form-check mb-4">
+                  <input type="checkbox" class="form-check-input" id="signupFormPrivacyCheck" name="signupFormPrivacyCheck" required data-msg="Please accept our Privacy Policy.">
+                  <label class="form-check-label" for="signupFormPrivacyCheck"> By submitting this form I have read and acknowledged the <a href="{%url 'website:privacy'%}">Privacy Policy</a></label>
+                </div>
+                <!-- End Check -->
+
+                <div class="d-grid mb-2">
+                  <button type="submit" class="btn btn-primary btn-lg" id="sub">Send inquiry</button>
+                </div>
+
+                <div class="text-center">
+                  <span class="form-text">We'll get back to you in 1-2 business days.</span>
+                </div>
+              </form>
+              <!-- End Form -->
+            </div>
+          </div>
+          <!-- End Card -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Shape -->
+    <div class="shape shape-bottom zi-1">
+      <svg width="3000" height="500" viewBox="0 0 3000 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 500H3000V0L0 500Z" fill="#fff"/>
+      </svg>
+    </div>
+    <!-- End Shape -->
+  </div>
+  <!-- End Contacts -->
+
+  
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_success" tabindex="-1" role="dialog" aria-labelledby="modal_successLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content bg-success">
+      <div class="modal-header">
+        <h5 class="modal-title text-white" id="modal_successLabel">Success</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-white">Thank you for expressing interest in Tale. We will get back to you shortly.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
+
+<script type="text/javascript">
+  var element = document.getElementById("id_about");
+  element.classList.add("active");
+</script>
+{%endblock%}
+
+
+{%block facebook%}
+<script src="{%static 'assets/js/jquery.min.js'%}"></script>
+<script type="text/javascript">
+  
+  $('#contact-form').on('submit', function(event){
+      event.preventDefault();
+      document.getElementById('sub').innerHTML = ' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+
+      $.ajax({
+          url : '{%url "website:contact"%}',
+          type : 'POST',
+          data : { name : $('#id_name').val(), email : $('#id_email').val(), 
+          phone : $('#id_phone').val(), message : $('#id_message').val()},
+
+          success : function(json){
+              console.log(json);
+              document.getElementById('sub').innerHTML = 'Send inquiry';
+              $("#modal_success").modal('show');
+          }
+      });
+  });
+
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+</script>
+{%endblock%}

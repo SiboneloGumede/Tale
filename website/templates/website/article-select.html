@@ -1,0 +1,365 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}{{article.title}} | Tale{%endblock%}
+
+{%block meta%}
+<meta name="description" content="{{article.blurb}}">
+<meta name="keywords" content="{{article.tags}}">
+<meta name="author" content="{{article.user.get_full_name}}">
+
+<meta property="og:url" content="http://www.taleapp.io/publications/{{article.pk}}/{{article.slug}}" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="{{article.title}}" />
+<meta property="og:description" content="{{article.blurb}}" />
+<meta property="og:image" content="{{article.get_imge}}" />
+{%endblock%}
+
+
+{%block content%}
+<main id="content" role="main">
+    <!-- Article Description -->
+    <div class="container content-space-t-3 content-space-t-lg-4 content-space-b-2">
+      <div class="w-lg-65 mx-lg-auto">
+        <div class="mb-4">
+          <h1 class="h2">{{article.title}}</h1>
+        </div>
+
+        <div class="row align-items-sm-center mb-5">
+          <div class="col-sm-7 mb-4 mb-sm-0">
+            <!-- Media -->
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0">
+                <img class="avatar avatar-circle" src="{{article.user.gravatar}}" alt="Image Description">
+              </div>
+
+              <div class="flex-grow-1 ms-3">
+                <h5 class="mb-0">
+                  <a class="text-dark" href="{%url 'website:author-select' article.user.pk article.user.username%}">{{article.user.get_full_name}}</a>
+                </h5>
+                <span class="d-block small">{{article.date|date:'d F Y'}}</span>
+              </div>
+            </div>
+            <!-- End Media -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-sm-5">
+            <div class="d-flex justify-content-sm-end align-items-center">
+              <span class="text-cap mb-0 me-2">Share:</span>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-soft-secondary btn-sm btn-icon rounded-circle" onclick="copyToClipboard();">
+                  <i class="bi-link"></i>
+                </button>
+               
+              </div>
+            </div>
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+
+        <p>{{article.blurb|safe|linebreaks}}</p>
+      </div>
+
+      <div class="my-4 my-sm-8 text-center">
+        {% if article.image %}
+          <img class="img-fluid rounded-lg" src="{{article.get_image}}" alt="Image Description">
+        {% else %}
+          <img class="card-img" src="{%static 'assets/img/tale/tale-logo.png' %}" alt="Image Description">
+        {% endif %}
+      </div>
+
+      {%if article.is_paygated%}
+        {%if request.user.is_authenticated%}
+          {%if is_subscribed%}
+            <div class="w-lg-65 mx-lg-auto">
+              <p>{{article.body|safe|linebreaks}}</p>
+            </div>
+          {%else%}
+            <div class="w-lg-65 mx-lg-auto">
+                
+              <div class="card bg-dark text-center my-4" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+                <div class="card-body">
+                  <h4 class="text-white mb-4">This post is for paying subscribers.</h4>
+
+                  <div class="w-lg-75 mx-lg-auto">
+                    <button type="button" class="btn btn-primary" onclick="payfastModal();">Subscribe</button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%endif%}
+        {%else%}
+          <div class="w-lg-65 mx-lg-auto">
+                
+            <div class="card bg-dark text-center my-4" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+              <div class="card-body">
+                <h4 class="text-white mb-4">This post is for paying subscribers.</h4>
+
+                <div class="w-lg-75 mx-lg-auto">
+                  <a href="{%url 'website:login'%}?next=/publications/{{article.pk}}/{{article.slug}}/" class="btn btn-primary">Subscribe</a>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        {%endif%}
+
+      {%else%}
+      <div class="w-lg-65 mx-lg-auto">
+        <p>{{article.body|safe|linebreaks}}</p>
+      </div>
+      {%endif%}
+
+      <div class="w-lg-65 mx-lg-auto">
+
+        <!-- Badges -->
+        <div class="mt-5">
+          {%for tag in tags%}
+          <a class="btn btn-soft-secondary btn-xs m-1" href="{%url 'website:tags' tag%}">{{tag}}</a>
+          {%endfor%}
+        </div>
+        <!-- End Badges -->
+
+        <div class="row justify-content-sm-between align-items-sm-center mt-5">
+          <div class="col-sm mb-2 mb-sm-0">
+            <div class="d-flex align-items-center">
+              <span class="text-cap mb-0 me-2">Share:</span>
+
+              <button class="btn btn-ghost-secondary btn-sm btn-icon rounded-circle me-2" onclick="copyToClipboard();">
+                <i class="bi-link"></i>
+              </button>
+              
+            </div>
+          </div>
+          <!-- End Col -->
+          {%if request.user.is_authenticated%}
+          <div class="col-sm-auto">
+            <form action="{%url 'website:ajax-bookmark-article' user.pk article.pk%}" id="bookmark-form">
+              {%csrf_token%}
+              <button type="submit" class="btn btn-soft-secondary btn-sm btn-icon rounded-circle" data-toggle="tooltip" data-placement="top" title="Bookmark article" id="bookmark-sub">
+                <i class="bi-bookmark"></i>
+              </button>
+            </form>
+            
+          </div>
+          <!-- End Col -->
+          {%endif%}
+
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Article Description -->
+
+    <!-- User Profile -->
+    <div class="container content-space-t-1">
+      <div class="row justify-content-lg-center">
+        <div class="col-lg-8">
+          <div class="mb-5">
+            <h4>About the author</h4>
+          </div>
+
+          <!-- Media -->
+          <div class="d-sm-flex">
+            <div class="flex-shrink-0 mb-3 mb-sm-0">
+              <img class="avatar avatar-xl avatar-circle" src="{{article.user.gravatar}}" alt="Image Description">
+            </div>
+
+            <div class="flex-grow-1 ms-sm-4">
+              <!-- Media -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">
+                  <a class="text-dark" href="./blog-author-profile.html">{{article.user.get_full_name}}</a>
+                </h3>
+                {%if request.user.is_authenticated%}
+                {%if is_subscribed%}
+                  <button type="button" class="btn btn-outline-primary btn-sm" disabled>
+                  <i class="bi-person-plus-fill me-1"></i> Subscribed
+                </button>
+                {%else%}
+                  <button type="button" class="btn btn-outline-primary btn-sm" onclick="payfastModal();">
+                    <i class="bi-person-plus-fill me-1"></i> Subscribe
+                  </button>
+                  
+                {%endif%}
+                {%else%}
+                <a href="{%url 'website:login'%}?next=/publications/{{article.pk}}/{{article.slug}}/" class="btn btn-outline-primary btn-sm">
+                  <i class="bi-person-plus-fill me-1"></i> Subscribe
+                </a>
+                {%endif%}
+                
+              </div>
+              <!-- End Media -->
+
+              <p>{{article.user.bio}}</p>
+            </div>
+          </div>
+          <!-- End Media -->
+        </div>
+      </div>
+    </div>
+    <!-- End User Profile -->
+
+    <!-- Comment -->
+    <div class="container content-space-1 content-space-lg-3">
+      <!-- Heading -->
+      <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>Post a comment</h2>
+      </div>
+      <!-- End Heading -->
+
+      <div class="row justify-content-lg-center">
+        <div class="col-lg-8">
+          <!-- Comment -->
+          	<div id="disqus_thread"></div>
+          	<script>
+			    /**
+			    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+			    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+			    
+			    var disqus_config = function () {
+			    this.page.url = "http://127.0.0.1:800/{{article.pk}}/{{article.slug}}/";  // Replace PAGE_URL with your page's canonical URL variable
+			    this.page.identifier = "{{article.page_identifier}}"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+			    };
+			    
+			    (function() { // DON'T EDIT BELOW THIS LINE
+			    var d = document, s = d.createElement('script');
+			    s.src = 'https://tale-2.disqus.com/embed.js';
+			    s.setAttribute('data-timestamp', +new Date());
+			    (d.head || d.body).appendChild(s);
+			    })();
+			</script>
+			<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <!-- End Comment -->
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Comment -->
+    <script id="dsq-count-scr" src="//tale-2.disqus.com/count.js" async></script>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_success" tabindex="-1" role="dialog" aria-labelledby="modal_successLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content bg-success">
+      <div class="modal-header">
+        <h5 class="modal-title text-white" id="modal_successLabel">Article bookmarked!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-white">You have successfully bookmarked this article. You may visit your library at any time to see your bookmarked articles.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
+
+<script type="text/javascript">
+  function copyToClipboard(text) {
+    var inputc = document.body.appendChild(document.createElement("input"));
+    inputc.value = window.location.href;
+    inputc.focus();
+    inputc.select();
+    document.execCommand('copy');
+    inputc.parentNode.removeChild(inputc);
+    alert("URL Copied.");
+  }
+</script>
+{%endblock%}
+
+{%if request.user.is_authenticated%}
+{%block payfast%}
+<script src="https://www.payfast.co.za/onsite/engine.js"></script> 
+
+<script type="text/javascript">
+
+  function payfastModal(){
+    window.payfast_do_onsite_payment({"uuid":"{{identifier}}"}); 
+  }
+  
+</script>
+{%endblock%}
+{%endif%}
+
+{%block facebook%}
+<script src="{%static 'assets/js/jquery.min.js'%}"></script>
+<script type="text/javascript">
+  setTimeout(readFunc, 30000);
+  
+  function readFunc(){
+    $.ajax({
+      url: '/ajax/article-read/{{user.pk}}/{{article.pk}}/',
+      data: {
+        'pk': {{user.pk}},
+        'publication': {{article.pk}}
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+      }
+    });
+  }
+  
+</script>
+
+{%if request.user.is_authenticated%}
+<script type="text/javascript">
+  
+  $('#bookmark-form').on('submit', function(event){
+      event.preventDefault();
+      document.getElementById('bookmark-sub').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      $.ajax({
+          url : '{%url "website:ajax-bookmark-article" user.pk article.pk%}',
+          type : 'POST',
+          data : { 'pk': {{user.pk}},
+            'publication': {{article.pk}}
+          },
+
+          success : function(json){
+              console.log(json);
+              document.getElementById('bookmark-sub').innerHTML = '<i class="bi-bookmark"></i>';
+              $("#modal_success").modal('toggle');
+          }
+      });
+  });
+
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+</script>
+{%endif%}
+{%endblock%}

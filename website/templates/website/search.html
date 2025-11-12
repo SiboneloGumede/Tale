@@ -1,0 +1,643 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block content%}
+<main id="content" role="main">
+  {%if request.user.is_authenticated%}
+  <!-- Hero -->
+  <div class="position-relative">
+    <!-- Swiper Main Slider -->
+    <div class="js-swiper-blog-journal-hero swiper-container">
+      <div class="swiper-wrapper">
+        {%for latest_publication in latest_publications%}
+        <div class="swiper-slide d-flex gradient-x-overlay-sm-dark bg-img-start" style="background-image: url({{latest_publication.get_image}}); min-height: 40rem;">
+          <!-- Container -->
+          <div class="container d-flex align-items-center" style="min-height: 40rem;">
+            <div class="w-lg-50 me-3">
+              <!-- Media -->
+              <div class="d-flex align-items-center mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar avatar-circle">
+                    <img class="avatar-img" src="{{latest_publication.user.gravatar}}" alt="Image Description">
+                  </div>
+                </div>
+
+                <div class="flex-grow-1 ms-3">
+                  <a class="text-white" href="{%url 'website:article-select' latest_publication.pk latest_publication.slug%}">{{latest_publication.user.get_full_name}}</a>
+                </div>
+              </div>
+              <!-- End Media -->
+
+              <div class="mb-5">
+                <h2 class="h1 text-white">{{latest_publication.title}}</h2>
+              </div>
+              
+              <a class="btn btn-primary btn-transition" href="{%url 'website:article-select' latest_publication.pk latest_publication.slug%}">Read article <i class="bi-chevron-right small ms-1"></i></a>
+            </div>
+          </div>
+          <!-- End Container -->
+        </div>
+        {%endfor%}
+
+
+      </div>
+
+      <!-- Swiper Pagination -->
+      <div class="js-swiper-blog-journal-hero-pagination swiper-pagination swiper-pagination-light swiper-pagination-vertical swiper-pagination-middle-y-end me-3 d-lg-none"></div>
+    </div>
+    <!-- End Swiper Main Slider -->
+
+    <!-- Swiper Thumbs Slider -->
+    <div class="d-none d-lg-block container translate-middle-y position-absolute top-50 start-0 end-0 zi-2">
+      <div class="translate-middle-y position-absolute top-50 end-0">
+        <div class="js-swiper-blog-journal-hero-thumbs swiper-container" style="opacity:0;max-width: 13rem;">
+          <div class="swiper-wrapper">
+            {%for latest_publication in latest_publications%}
+            <!-- Slide -->
+            <div class="swiper-slide swiper-pagination-progress swiper-pagination-progress-light">
+              <p class="text-white">{{latest_publication.title}}</p>
+
+              <div class="swiper-pagination-progress-body">
+                <div class="js-swiper-pagination-progress-body-helper swiper-pagination-progress-body-helper"></div>
+              </div>
+            </div>
+            <!-- End Slide -->
+            {%endfor%}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Swiper Thumbs Slider -->
+  </div>
+  <!-- End Hero -->
+
+  <!-- Heading -->
+  <div class="text text-center mt-6">
+    <h1 class="display-5">{{word}}</h1>
+  </div>
+  <!-- End Heading -->
+
+  <!-- Card Grid -->
+  <div class="container content-space-2">
+    <div class="row justify-content-lg-between">
+      <div class="col-lg-8 mb-10 mb-lg-0">
+        <div class="d-grid gap-7 mb-7">
+          {%for publication in publications%}
+          <!-- Card -->
+          <div class="card card-flush card-stretched-vertical">
+            <div class="row">
+              <div class="col-sm-5">
+                <img class="card-img" src="{{publication.get_image}}" alt="Image Description">
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-7">
+                <!-- Card Body -->
+                <div class="card-body">
+                  
+
+                  <h3 class="card-title">
+                    {%if publication.is_article%}
+                    <a class="text-dark" href="{%url 'website:article-select' publication.pk publication.slug%}">{{publication.title}}</a>
+                    {%else%}
+                    <a class="text-dark" href="{%url 'website:add-to-cart' publication.pk%}">{{publication.title}}</a>
+                    {%endif%}
+                  </h3>
+                  
+                  <p class="card-text">{{publication.blurb}}</p>
+                  
+                  <!-- Card Footer -->
+                  <div class="card-footer">
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <a class="avatar avatar-circle" href="{%url 'website:author-select' publication.user.pk publication.user.username%}">
+                          <img class="avatar-img" src="{{publication.user.gravatar}}" alt="Image Description">
+                        </a>
+                      </div>
+                    
+                      <div class="flex-grow-1 ms-3">
+                        <a class="card-link link-dark" href="{%url 'website:author-select' publication.user.pk publication.user.username%}">{{publication.user.get_full_name}}</a>
+                        <p class="card-text small">{{publication.date|date:'M d, Y'}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Card Footer -->
+                </div>
+                <!-- End Card Body -->
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+          </div>
+          <!-- End Card -->
+          {%endfor%}
+
+          
+        </div>
+
+        <!-- Sticky Block End Point -->
+        <div id="stickyBlockEndPoint"></div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {%if publications.has_previous%}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ publications.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">
+                  <i class="bi-chevron-double-left small"></i>
+                </span>
+              </a>
+            </li>
+            {%else%}
+            <li class="page-item disabled">
+              <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">
+                  <i class="bi-chevron-double-left small"></i>
+                </span>
+              </a>
+            </li>
+            {%endif%}
+
+            {%for pages in range%}
+              {%if publications.number == forloop.counter%}
+                <li class="page-item active"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+              {%else%}
+                <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+              {%endif%}
+            {%endfor%}
+           
+            {%if publications.has_next%}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ publications.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">
+                  <i class="bi-chevron-double-right small"></i>
+                </span>
+              </a>
+            </li>
+            {%else%}
+            <li class="page-item disabled">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">
+                  <i class="bi-chevron-double-right small"></i>
+                </span>
+              </a>
+            </li>
+            {%endif%}
+          </ul>
+        </nav>
+        <!-- End Pagination -->
+      </div>
+      <!-- End Col -->
+
+      <div class="col-lg-3">
+        <div class="mb-7">
+          <div class="mb-3">
+            <h3>Search</h3>
+          </div>
+
+          <!-- Form -->
+          <form action="{%url 'website:search-publication'%}" id="search-form" method="POST">
+            {%csrf_token%}
+            <div class="mb-2">
+              <input type="text" class="form-control" name="search" id="id_search" placeholder="Search" aria-label="Search" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary" id="search-sub">Search</button>
+            </div>
+          </form>
+          <!-- End Form -->
+        </div>
+
+        <div class="mb-7">
+          <div class="mb-3">
+            <h3>Newsletter</h3>
+          </div>
+
+          <!-- Form -->
+          <form action="{%url 'website:landing'%}" id="sign-up-form" method="POST">
+            {%csrf_token%}
+            <div class="mb-2">
+              <input type="email" class="form-control" name="email" id="id_email" placeholder="Enter email" aria-label="Enter email" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary" id="sub">Subscribe</button>
+            </div>
+          </form>
+          <!-- End Form -->
+
+          <p class="form-text">Get special offers on the latest developments from Front.</p>
+        </div>
+
+        <!-- Sticky Block Start Point -->
+        <div id="stickyBlockStartPoint"></div>
+
+        <div class="js-sticky-block"
+             data-hs-sticky-block-options='{
+               "parentSelector": "#stickyBlockStartPoint",
+               "targetSelector": "#header",
+               "breakpoint": "md",
+               "startPoint": "#stickyBlockStartPoint",
+               "endPoint": "#stickyBlockEndPoint",
+               "stickyOffsetTop": 80
+             }'>
+          <div class="mb-7">
+            <div class="mb-3">
+              <h3>Top authors</h3>
+            </div>
+
+            <div class="d-grid gap-2">
+              {%for author in authors%}
+              <!-- Card -->
+              <a class="d-block" href="{%url 'website:author-select' author.pk author.username%}">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="avatar avatar-lg">
+                      <img class="avatar-img" src="{{author.gravatar}}" alt="Image Description">
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h5 class="text-inherit mb-0">{{author.get_full_name}}</h5>
+                  </div>
+                </div>
+              </a>
+              <!-- End Card -->
+              {%endfor%}
+
+            </div>
+          </div>
+
+          <div class="mb-7">
+            <div class="mb-3">
+              <h3>Tags</h3>
+            </div>
+            {%for tag in tags%}
+            <a class="btn btn-soft-secondary btn-xs mb-1" href="{%url 'website:tags' tag%}">{{tag}}</a>
+            {%endfor%}
+            
+          </div>
+        </div>
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+  <!-- End Card Grid -->
+  {%else%}
+  <!-- Hero -->
+  <div class="overflow-hidden">
+    <div class="container content-space-t-4 content-space-b-3">
+      <div class="row justify-content-lg-between align-items-md-center">
+        <div class="col-md-6 col-lg-6 mb-7 mb-md-0">
+          <!-- Heading -->
+          <div class="mb-5">
+            <h1 class="display-5 mb-3">
+              <span class="text-primary text-highlight-warning">
+                  <span class="js-typedjs"
+                        data-hs-typed-options='{
+                          "strings": ["Stories and ideas"],
+                          "typeSpeed": 90,
+                          "loop": true,
+                          "backSpeed": 30,
+                          "backDelay": 2500
+                        }'></span>
+                </span>  setting Africa Ablaze typewriting feature to be kept. It adds the element of writing and creating the stories.</h1>
+          </div>
+          <!-- End Heading -->
+          <div class="d-grid d-sm-flex gap-3">
+            <a class="btn btn-danger btn-transition" href="{%url 'website:signup'%}">SIGN UP</a>
+          </div>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-md-6">
+          <div class="position-relative">
+            <img class="img-fluid rounded-2" src="{%static 'assets/img/tale/home-page.svg' %}" alt="Image Description">
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+  </div>
+  <!-- End Hero -->
+
+  <!-- Card Grid -->
+  <div class="container content-space-2">
+    <!-- Heading -->
+    <div class="w-md-75 text-center mx-md-auto mb-5 mb-md-9">
+      <h2 class="h1">Join the Tale Creative Economy</h2>
+      <p>Be apart of the rising creative economy by subscribing to your favourite creators and gaining access to their exclusive content. </p>
+    </div>
+    <!-- End Heading -->
+
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-4 mb-md-5 mb-lg-0">
+        <!-- Card -->
+        <div class="card card-lg card-transition h-100 text-center">
+          <div class="card-body">
+            <div class="mb-4">
+              <img class="avatar" src="{%static 'assets/img/tale/create.svg' %}" alt="Logo">
+            </div>
+            <h3 class="card-title">Create</h3>
+            <p class="card-text text-body">Write articles & ebooks and publishing them into a thriving community of readers. </p>
+          </div>
+          
+        </div>
+        <!-- End Card -->
+      </div>
+      <!-- End Col -->
+
+      <div class="col-md-6 col-lg-4 mb-4 mb-md-5 mb-lg-0">
+        <!-- Card -->
+        <div class="card card-lg card-transition h-100 text-center">
+          <div class="card-body">
+            <div class="mb-4">
+              <img class="avatar" src="{%static 'assets/img/tale/discover.svg' %}" alt="Logo">
+            </div>
+            <h3 class="card-title">Discover</h3>
+            <p class="card-text text-body">Discover new creators and find content that ignites your passion.</p>
+          </div>
+          
+        </div>
+        <!-- End Card -->
+      </div>
+      <!-- End Col -->
+
+      <div class="col-md-6 col-lg-4">
+        <!-- Card -->
+        <div class="card card-lg card-transition h-100 text-center">
+          <div class="card-body">
+            <div class="mb-4">
+              <img class="avatar" src="{%static 'assets/img/tale/earn.svg' %}" alt="Logo">
+            </div>
+            <h3 class="card-title">Earn</h3>
+            <p class="card-text text-body">Monetise your community and earn with monthly subscriptions and ebook sales.</p>
+          </div>
+          
+        </div>
+        <!-- End Card -->
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+  <!-- End Card Grid -->
+
+  <!-- Portfolio -->
+  <div id="caseStudies" class="container content-space-2">
+    <div class="d-grid gap-7 gap-md-10">
+
+      <!-- Card -->
+      <div data-aos="fade-up">
+        <a class="card card-transition bg-soft-danger shadow-none" href="#">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-4 mb-5 mb-lg-0">
+                <div class="d-flex flex-column h-100">
+                  <div class="mb-7">
+                    <h2 class="card-title h1">Tale</h2>
+                    <p class="card-text text-body">For curious creatives looking to discover new possibilities and communities. </p>
+                  </div>
+
+                  <!-- Testimonials -->
+                  <div class="card shadow-none mt-auto">
+                    <div class="card-body">
+                      <!-- Blockquote -->
+                      <figure>
+                        
+
+                        <blockquote class="blockquote">“ Use your creativity to unlock a new world of possibilities. ”</blockquote>
+
+                        <figcaption class="blockquote-footer">
+                          <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                              <img class="avatar avatar-circle" src="{%static 'assets/img/tale/amani.jpg' %}" alt="Image Description">
+                            </div>
+
+                            <div class="flex-grow-1 ms-3">
+                              Amani Hlubi
+                              <span class="blockquote-footer-source">Author and Public Speaker</span>
+                            </div>
+                          </div>
+                        </figcaption>        
+                      </figure>
+                      <!-- End Blockquote -->
+                    </div>
+                  </div>
+                  <!-- End Testimonials -->
+                </div>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-lg-8">
+                <div class="mb-5">
+                  <img class="img-fluid rounded-2" src="{%static 'assets/img/tale/man-books.svg' %}" alt="Image Description">
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6 mb-3 mb-sm-0">
+                    <p class="card-text text-body">Visit our company blog for latest news and updates. </p>
+                  </div>
+                  <!-- End Col -->
+
+                </div>
+                <!-- End Row -->
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+          </div>
+        </a>
+      </div>
+      <!-- End Card -->
+    </div>
+  </div>
+  <!-- End Portfolio -->
+
+  <!-- Card Grid -->
+  <div class="container content-space-2" id="sign-up">
+    <div class="row justify-content-lg-between">
+      <div class="col-lg-5 mb-9 mb-lg-0">
+        <img class="avatar avatar-xxl avatar-4x3 mb-4" src="{%static 'assets/img/tale/tale-logo.png' %}" alt="SVG">
+
+        <!-- Heading -->
+        <div class="mb-5">
+          <h2>Be the first to know</h2>
+          <p>Leave your email below and be notified when we go live</p>
+        </div>
+        <!-- End Heading -->
+         <form action="{%url 'website:landing'%}" class="mx-lg-auto" method="POST" id="sign-up-form">
+          {%csrf_token%}
+          <div class="form-row input-group-borderless">
+            
+            <div class="col-sm column-divider-sm-left mb-4">
+              <input type="email" class="form-control shadow-none" name="email" placeholder="Email" id="id_email" required>
+            </div>
+            <div class="col-md-auto">
+              <button type="submit" class="btn btn-block btn-primary btn-wide float-end" id="sub">SIGN UP</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- End Col -->
+
+      <div class="col-lg-6">
+        <img class="w-100 rounded-2" src="{%static 'assets/img/tale/people.svg' %}" alt="Image Description">
+        <!-- End Row -->
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+  <!-- End Card Grid -->
+  {%endif%}
+
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_success" tabindex="-1" role="dialog" aria-labelledby="modal_successLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content bg-success">
+      <div class="modal-header">
+        <h5 class="modal-title text-white" id="modal_successLabel">Success</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-white">Thank you for expressing interest in Tale. You have been added to our mailing list.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
+
+<script type="text/javascript">
+  var element = document.getElementById("id_home");
+  element.classList.add("active");
+</script>
+
+{%endblock%}
+
+{%block js%}
+// INITIALIZATION OF SWIPER
+// =======================================================
+var swiper = new Swiper('.js-swiper-software-hero',{
+  preloaderClass: 'custom-swiper-lazy-preloader',
+  slidesPerView: 1,
+  pagination: {
+    el: '.js-swiper-software-hero-pagination',
+    dynamicBullets: true,
+    clickable: true,
+  },
+  breakpoints: {
+    380: {
+      slidesPerView: 2,
+      spaceBetween: 15,
+    },
+    580: {
+      slidesPerView: 3,
+      spaceBetween: 15,
+    },
+    768: {
+      slidesPerView: 4,
+      spaceBetween: 15,
+    },
+    1024: {
+      slidesPerView: 5,
+      spaceBetween: 30,
+    },
+  },
+  on: {
+    'imagesReady': function (swiper) {
+      const preloader = swiper.el.querySelector('.js-swiper-software-hero-preloader')
+      preloader.parentNode.removeChild(preloader)
+    }
+  }
+});
+
+// INITIALIZATION OF SWIPER
+// =======================================================
+var sliderThumbs = new Swiper('.js-swiper-blog-journal-hero-thumbs', {
+  direction: 'vertical',
+  watchSlidesVisibility: true,
+  watchSlidesProgress: true,
+  slidesPerView: 3,
+  spaceBetween: 100,
+  history: false,
+  on: {
+    'afterInit': function (swiper) {
+      swiper.el.style.opacity = 1
+      swiper.el.querySelectorAll('.js-swiper-pagination-progress-body-helper')
+              .forEach($progress => $progress.style.transitionDuration = `${swiper.params.autoplay.delay}ms`)
+    }
+  }
+});
+
+var swiper = new Swiper('.js-swiper-blog-journal-hero',{
+  effect: 'fade',
+  autoplay: true,
+  loop: true,
+  pagination: {
+    el: '.js-swiper-blog-journal-hero-pagination',
+    clickable: true,
+  },
+  thumbs: {
+    swiper: sliderThumbs
+  }
+});
+{%endblock%}
+
+{%block facebook%}
+<script src="{%static 'assets/js/jquery.min.js'%}"></script>
+<script type="text/javascript">
+  
+  $('#sign-up-form').on('submit', function(event){
+      event.preventDefault();
+      document.getElementById('sub').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      $.ajax({
+          url : '{%url "website:landing"%}',
+          type : 'POST',
+          data : {email : $('#id_email').val() },
+
+          success : function(json){
+              console.log(json);
+              document.getElementById('sub').innerHTML = 'SUBSCRIBE';
+              $("#modal_success").modal('show');
+          }
+      });
+  });
+
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+</script>
+{%endblock%}
+

@@ -1,0 +1,153 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>Invoice: #{{order.order_number}} | Tale</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{%static 'assets/img/tale/tale-logo.png'%}">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{%static 'assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+
+  <!-- CSS Front Template -->
+  <link rel="stylesheet" href="{%static 'assets/css/theme.min.css' %}">
+</head>
+
+<body>
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main">
+    <!-- Content -->
+    <div class="container content-space-2">
+      <div class="w-lg-85 mx-lg-auto">
+        <!-- Card -->
+        <div class="card card-lg mb-5">
+          <div class="card-body">
+            <div class="row justify-content-lg-between">
+              <div class="col-sm order-2 order-sm-1 mb-3">
+                <div class="mb-2">
+                  <img class="avatar" src="{%static 'assets/img/tale/tale-logo.png'%}" alt="Logo">
+                </div>
+
+                <h1 class="h2 text-primary">Tale PTY Ltd.</h1>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-auto order-1 order-sm-2 text-sm-end mb-3">
+                <div class="mb-3">
+                  <h2>Invoice #</h2>
+                  <span class="d-block">{{order.order_number}}</span>
+                </div>
+
+                <address class="text-dark">
+                  Durban,<br>
+                  South Africa
+                </address>
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+
+            <div class="row justify-content-md-between mb-3">
+              <div class="col-md">
+                <h4>Bill to:</h4>
+                <h4>{{order.user.get_full_name}}</h4>
+
+                <address>
+                  {{order.user.billing_address}}
+                </address>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-md text-md-end">
+                <dl class="row">
+                  <dt class="col-sm-8">Invoice date:</dt>
+                  <dd class="col-sm-4">{{order.placed|date:'d/m/Y'}}</dd>
+                </dl>
+                
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="table table-borderless table-nowrap table-align-middle">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th class="table-text-end">Amount</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {%for order_detail in order.order_details.all%}
+                  <tr>
+                    <th>{{order_detail.publication.title}}</th>
+                    <td>1</td>
+                    <td class="table-text-end">R{{order_detail.publication.amount_locale}}</td>
+                  </tr>
+                  {%endfor%}
+                </tbody>
+              </table>
+            </div>
+            <!-- End Table -->
+
+            <hr class="my-5">
+
+            <div class="row justify-content-md-end mb-3">
+              <div class="col-md-8 col-lg-7">
+                <dl class="row text-sm-end">
+                  <dt class="col-sm-6">Subtotal:</dt>
+                  <dd class="col-sm-6">R{{order.total_value}}</dd>
+                  <dt class="col-sm-6">Shipping:</dt>
+                  <dd class="col-sm-6">FREE</dd>
+                  <dt class="col-sm-6">Total:</dt>
+                  <dd class="col-sm-6">R{{order.total_value}}</dd>
+                  
+                </dl>
+                <!-- End Row -->
+              </div>
+            </div>
+            <!-- End Row -->
+
+            <div class="mb-3">
+              <h3>Thank you!</h3>
+              <p>If you have any questions concerning this invoice, use the following contact information:</p>
+            </div>
+
+            <p class="small mb-0">&copy; 2021 Tale.</p>
+          </div>
+        </div>
+        <!-- End Card -->
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end d-print-none gap-3">
+
+          <a class="btn btn-primary" href="javascript:;" onclick="window.print(); return false;">
+            <i class="bi-printer me-1"></i> Print details
+          </a>
+        </div>
+        <!-- End Footer -->
+      </div>
+    </div>
+    <!-- End Content -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <!-- JS Global Compulsory  -->
+  <script src="{%static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{%static 'assets/js/theme.min.js' %}"></script>
+</body>
+</html>

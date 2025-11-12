@@ -1,0 +1,126 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}FAQs | Tale{%endblock%}
+
+
+{%block content%}
+<main id="content" role="main">
+    <!-- Hero -->
+    <div class="bg-img-start" style="background-image: url({%static 'assets/svg/components/card-11.svg' %});">
+      <div class="container content-space-t-3 content-space-t-lg-5 content-space-b-2">
+        <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+          <h1>FAQ</h1>
+          <p>Search our FAQ for answers to anything you might ask.</p>
+        </div>
+      </div>
+    </div>
+    <!-- End Hero -->
+
+    <!-- FAQ -->
+    <div class="container content-space-2 content-space-b-lg-3">
+      <div class="w-lg-75 mx-lg-auto">
+        <div class="d-grid gap-10">
+          <div class="d-grid gap-3">
+            <h2>Basics</h2>
+
+            <!-- Accordion -->
+            <div class="accordion accordion-flush accordion-lg" id="accordionFAQBasics">
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsOne">
+                  <a class="accordion-button" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsOne" aria-expanded="true" aria-controls="collapseBasicsOne">
+                    How do I need get my payments as an author?
+                  </a>
+                </div>
+                <div id="collapseBasicsOne" class="accordion-collapse collapse show" aria-labelledby="headingBasicsOne" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    You will need a payfast account to receive your ebook sales and subscription revenue. Payfast will still charge at their standard rates once they complete a transaction. This applies for all plans.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsTwo">
+                  <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsTwo" aria-expanded="false" aria-controls="collapseBasicsTwo">
+                    How can my customers pay?
+                  </a>
+                </div>
+                <div id="collapseBasicsTwo" class="accordion-collapse collapse" aria-labelledby="headingBasicsTwo" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    Customers can pay with their Payfast account or their Visa, master card.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsThree">
+                  <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsThree" aria-expanded="false" aria-controls="collapseBasicsThree">
+                    Can I cancel my account anytime?
+                  </a>
+                </div>
+                <div id="collapseBasicsThree" class="accordion-collapse collapse" aria-labelledby="headingBasicsThree" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    Absolutely you can cancel your account whenever you’d like if you decide we’re not for you.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsFour">
+                  <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsFour" aria-expanded="false" aria-controls="collapseBasicsFour">
+                    When do I get paid?
+                  </a>
+                </div>
+                <div id="collapseBasicsFour" class="accordion-collapse collapse" aria-labelledby="headingBasicsFour" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    We will deposit your sales to you immediately after a transaction has been completed.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsFive">
+                  <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsFive" aria-expanded="false" aria-controls="collapseBasicsFive">
+                    Do you offer charity discounts?
+                  </a>
+                </div>
+                <div id="collapseBasicsFive" class="accordion-collapse collapse" aria-labelledby="headingBasicsFive" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    We love to support great causes of all kinds so please get in touch with us and we’ll see where we can help.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+
+              <!-- Accordion Item -->
+              <div class="accordion-item">
+                <div class="accordion-header" id="headingBasicsSix">
+                  <a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#collapseBasicsSix" aria-expanded="false" aria-controls="collapseBasicsSix">
+                    How can I contact Tale?
+                  </a>
+                </div>
+                <div id="collapseBasicsSix" class="accordion-collapse collapse" aria-labelledby="headingBasicsSix" data-bs-parent="#accordionFAQBasics">
+                  <div class="accordion-body">
+                    Just shoot us an email at <a href="mailto:info@taleapp.io">info@taleapp.io</a> or reach out to us using <a href="{%url 'website:contact'%}">our contact form</a>.
+                  </div>
+                </div>
+              </div>
+              <!-- End Accordion Item -->
+            </div>
+            <!-- End Accordion -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End FAQ -->
+</main>
+{%endblock%}

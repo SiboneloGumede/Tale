@@ -1,0 +1,289 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}{{author.get_full_name}} | Tale{%endblock%}
+
+{%block content%}
+<main id="content" role="main">
+    <!-- User Profile -->
+    <div class="container content-space-t-3 content-space-t-lg-4 content-space-b-1">
+      <div class="w-md-75 w-lg-65 mx-md-auto">
+        <!-- Media -->
+        <div class="d-sm-flex">
+          <div class="flex-shrink-0 mb-3 mb-sm-0">
+            <div class="avatar avatar-xxl avatar-circle">
+              <img class="avatar-img" src="{{author.gravatar}}" alt="Image Description">
+            </div>
+          </div>
+
+          <div class="flex-grow-1 ms-sm-4">
+            <!-- Media -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h1 class="h2 mb-0">{{author.get_full_name}}</h1>
+              
+              {%if request.user.is_authenticated%}
+              {%if is_mine%}
+                <a href="{%url 'website:personal-info'%}" class="btn btn-outline-primary btn-sm">
+                  <i class="bi-pencil-square me-1"></i> Edit
+                </a>
+              {%else%}
+                {%if is_subscribed%}
+                  <button type="button" class="btn btn-outline-primary btn-sm" disabled>
+                    <i class="bi-person-plus-fill me-1"></i> Subscribed
+                  </button>
+                {%else%}
+                  <button type="button" class="btn btn-outline-primary btn-sm" onclick="payfastModal();">
+                    <i class="bi-person-plus-fill me-1"></i> Subscribe
+                  </button>
+                {%endif%}
+              {%endif%}
+              {%else%}
+              <a href="{%url 'website:login'%}?next=/authors/{{author.pk}}/{{author.username}}/" class="btn btn-outline-primary btn-sm">
+                <i class="bi-person-plus-fill me-1"></i> Subscribe
+              </a>
+              {%endif%}
+            </div>
+            <!-- End Media -->
+
+            <div class="row mb-3">
+              <div class="col-auto">
+                <span class="h6">{{author.publications_count}}</span>
+                <span class="ms-1">Publications</span>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-auto">
+                <span class="h6">{{subscribers}}</span>
+                <span class="ms-1">Subscribers</span>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-auto">
+                <span class="h6">{{subscriptions}}</span>
+                <span class="ms-1">Subscriptions</span>
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+
+            <p>{{author.bio}}</p>
+          </div>
+        </div>
+        <!-- End Media -->
+      </div>
+    </div>
+    <!-- End User Profile -->
+
+    <div class="container">
+      <div class="border-top w-md-75 w-lg-65 mx-md-auto"></div>
+    </div>
+
+    <!-- Card Grid -->
+    <div class="content-space-b-2 content-space-b-lg-3" style="background-color: white">
+      <div class="position-relative">
+        <div class="container content-space-2">
+          <div class="row align-items-md-center mb-7">
+            <div class="col-md-6 mb-4 mb-md-0">
+              <h2>eBooks</h2>
+            </div>
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+
+          <!-- Swiper Slider -->
+          <div class="swiper-center-mode-end">
+            <div class="js-swiper-course-hero swiper-container">
+              <div class="swiper-wrapper">
+                {%for publication in ebooks%}
+                <!-- Slide -->
+                <div class="swiper-slide pt-2">
+                  <!-- Card -->
+                  <a class="card card-sm card-stretched-vertical card-transition bg-img-start" href="{%url 'website:add-to-cart' publication.pk%}" style="background-image: url({{publication.get_image}}); min-height: 15rem;">
+                    <div class="card-body">
+                      <span class="card-subtitle text-white-70">{{publication.user.get_full_name}}</span>
+                      <h4 class="card-title text-white">{{publication.title}}</h4>
+                      
+                      <div class="card-footer pt-0">
+                        <span class="card-link text-white">Buy now</span>
+                      </div>
+                    </div>
+                  </a>
+                  <!-- End Card -->
+                </div>
+                <!-- End Slide -->
+                {%endfor%}
+
+              </div>
+
+              <!-- Arrows -->
+              <div class="js-swiper-course-hero-button-next swiper-button-next"></div>
+              <div class="js-swiper-course-hero-button-prev swiper-button-prev"></div>
+            </div>
+          </div>
+          <!-- End Swiper Slider -->
+        </div>
+
+        <div class="w-100 w-md-65 bg-light position-absolute top-0 end-0 bottom-0 zi-n1"></div>
+      </div>
+    </div>
+    <!-- End Card Grid -->
+
+      <!-- Card Grid -->
+      <div class="container content-space-1">
+        <div class=" mx-md-auto">
+          <div class="row">
+
+  {% for publication in publications %}
+  <div class="card card-flush card-stretched-vertical">
+    <div class="row">
+      <div class="col-sm-5">
+        {% if publication.image %}
+          <img class="card-img" src="{{ publication.get_image }}" alt="{{ publication.title }}">
+        {% else %}
+          <img class="card-img" src="{% static 'assets/img/tale/tale-logo.png' %}" alt="Tale Logo">
+        {% endif %}
+                <!-- Shape -->
+                <div class="shape shape-bottom zi-1" style="margin-bottom: -.25rem">
+                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1920 100.1">
+                    <path fill="#fff" d="M0,0c0,0,934.4,93.4,1920,0v100.1H0L0,0z"></path>
+                  </svg>
+                </div>
+                <!-- End Shape -->
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body">
+                <h3 class="card-title">
+                  <a class="text-dark" href="{%url 'website:article-select' publication.pk publication.slug%}">{{publication.title}}</a>
+                </h3>
+
+                <p class="card-text">{{publication.blurb|safe}}</p>
+              </div>
+              <!-- End Card Body -->
+
+              <!-- Card Footer -->
+              <div class="card-footer">
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1">
+                    <div class="d-flex justify-content-end">
+                      <p class="card-text">{{publication.date|date:'d F Y'}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Card Footer -->
+            </div>
+            <!-- End Card -->
+          </div>
+          {%endfor%}
+        </div>
+
+        </div>
+      </div>
+      <!-- End Card Grid -->
+
+    <!-- Pagination -->
+    <div class="container content-space-b-2 content-space-b-lg-3">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          {%if publications.has_previous%}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ publications.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">
+                <i class="bi-chevron-double-left small"></i>
+              </span>
+            </a>
+          </li>
+          {%else%}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">
+                <i class="bi-chevron-double-left small"></i>
+              </span>
+            </a>
+          </li>
+          {%endif%}
+
+          {%for pages in range%}
+            {%if publications.number == forloop.counter%}
+              <li class="page-item active"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+            {%else%}
+            <li class="page-item"><a class="page-link" href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+            {%endif%}
+          {%endfor%}
+
+          {%if publications.has_next%}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ publications.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">
+                <i class="bi-chevron-double-right small"></i>
+              </span>
+            </a>
+          </li>
+          {%else%}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">
+                <i class="bi-chevron-double-right small"></i>
+              </span>
+            </a>
+          </li>
+          {%endif%}
+        </ul>
+      </nav>
+    </div>
+    <!-- End Pagination -->
+</main>
+{%endblock%}
+
+{%block js%}
+// INITIALIZATION OF SWIPER
+// =======================================================
+var swiper = new Swiper('.js-swiper-course-hero',{
+  preloaderClass: 'custom-swiper-lazy-preloader',
+  navigation: {
+    nextEl: '.js-swiper-course-hero-button-next',
+    prevEl: '.js-swiper-course-hero-button-prev',
+  },
+  slidesPerView: 1,
+  loop: 1,
+  breakpoints: {
+    380: {
+      slidesPerView: 2,
+      spaceBetween: 15,
+    },
+    580: {
+      slidesPerView: 3,
+      spaceBetween: 15,
+    },
+    768: {
+      slidesPerView: 4,
+      spaceBetween: 15,
+    },
+    1024: {
+      slidesPerView: 6,
+      spaceBetween: 15,
+    },
+  },
+  on: {
+    'imagesReady': function (swiper) {
+      const preloader = swiper.el.querySelector('.js-swiper-course-hero-preloader')
+      preloader.parentNode.removeChild(preloader)
+    }
+  }
+});
+{%endblock%}
+
+{%if request.user.is_authenticated%}
+{%block payfast%}
+<script src="https://www.payfast.co.za/onsite/engine.js"></script> 
+
+<script type="text/javascript">
+
+  function payfastModal(){
+    window.payfast_do_onsite_payment({"uuid":"{{identifier}}"});
+  }
+  
+</script>
+{%endblock%}
+{%endif%}

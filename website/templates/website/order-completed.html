@@ -1,0 +1,26 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}Order Completed | Tale{%endblock%}
+
+{%block content%}
+<main id="content" role="main">
+    <!-- Content -->
+    <div class="container content-space-2 content-space-lg-3">
+      <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+        <div class="mb-5">
+          <img class="img-fluid" src="{%static 'assets/img/illustrations/hi-five.png' %}" alt="SVG" style="width: 15rem;">
+        </div>
+
+        <div class="mb-5">
+          <h1 class="h2">Your order is completed!</h1>
+          <p>Thank you for your order! Your order is being processed and will be completed within 3-6 hours. You will receive an email confirmation when your order is completed.</p>
+        </div>
+        
+        <a class="btn btn-primary btn-transition rounded-pill px-6" href="#">Continue shopping</a>
+      </div>
+    </div>
+    <!-- End Content -->
+
+</main>
+{%endblock%}

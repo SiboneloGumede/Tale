@@ -1,0 +1,176 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%} Library | Tale{%endblock%}
+
+
+{%block content%}
+<main id="content" role="main">
+    <div class="container content-space-t-3 content-space-t-lg-5 content-space-b-2 content-space-b-lg-3">
+      <!-- Hero -->
+      <div class="text-center">
+        <p class="lead">Library</p>
+        <h1 class="display-4 mb-0">
+              <span class="text-primary text-highlight-warning">
+                  <span class="js-typedjs"
+                        data-hs-typed-options='{
+                          "strings": ["Stories and ideas"],
+                          "typeSpeed": 90,
+                          "loop": true,
+                          "backSpeed": 30,
+                          "backDelay": 2500
+                        }'></span>
+                </span> setting Africa ablaze.</h1>
+        </h1>
+      </div>
+    </div>
+    <!-- End Hero -->
+
+    <!-- Card Grid -->
+    <div class="container content-space-b-2 content-space-b-lg-3">
+      <!-- Nav Scroller -->
+      <div class="js-nav-scroller hs-nav-scroller-horizontal mb-7">
+        <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-left"></i>
+          </a>
+        </span>
+
+        <span class="hs-nav-scroller-arrow-next" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-right"></i>
+          </a>
+        </span>
+
+        <!-- Nav -->
+        <ul class="js-filter-options nav nav-segment nav-pills d-flex mx-auto" style="max-width: 30rem;">
+          <li class="nav-item">
+            <a class="nav-link active" href="javascript:;" data-group="all">All</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:;" data-group="saved-quick-reads">Saved Articles</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:;" data-group="e-books">E-Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:;" data-group="drafts">Drafts</a>
+          </li>
+          
+        </ul>
+        <!-- End Nav -->
+      </div>
+      <!-- End Nav Scroller -->
+
+      <div class="js-shuffle row row-cols-1 row-cols-sm-2 row-cols-md-3">
+        {%for sqr in sqrs%}
+        <div class="js-shuffle-item col mb-5" data-groups='["saved-quick-reads"]'>
+          <!-- Card -->
+          <a class="card card-flush card-transition" href="{%url 'website:article-select' sqr.publication.pk sqr.publication.slug%}">
+            <img class="card-img-top" src="{{sqr.publication.get_image}}" alt="Image Description">
+            <div class="card-body">
+              <span class="card-subtitle text-body">{{sqr.publication.user.get_full_name}}</span>
+              <h3 class="card-title">{{sqr.publication.title}}</h3>
+            </div>
+          </a>
+          <!-- End Card -->
+        </div>
+        <!-- End Col -->
+        {%endfor%}
+
+        {%for ebook in ebooks%}
+        <div class="js-shuffle-item col mb-5" data-groups='["e-books"]'>
+          <!-- Card -->
+          <a class="card card-flush card-transition" href="{%url 'website:article-select' ebook.publication.pk ebook.publication.slug%}">
+            <img class="card-img-top" src="{{ebook.publication.get_image}}" alt="Image Description">
+            <div class="card-body">
+              <span class="card-subtitle text-body">{{ebook.publication.user.get_full_name}}</span>
+              <h3 class="card-title">{{ebook.publication.title}}</h3>
+            </div>
+          </a>
+          <!-- End Card -->
+        </div>
+        <!-- End Col -->
+        {%endfor%}
+
+        {%for draft in drafts%}
+        <div class="js-shuffle-item col mb-5" data-groups='["drafts"]'>
+          <!-- Card -->
+          <a class="card card-flush card-transition" href="{%url 'website:step-1' draft.pk%}">
+            <img class="card-img-top" src="{{draft.get_image}}" alt="Image Description">
+            <div class="card-body">
+              <span class="card-subtitle text-body">{{draft.user.get_full_name}}</span>
+              <h3 class="card-title">{{draft.title}}</h3>
+            </div>
+          </a>
+          <!-- End Card -->
+        </div>
+        <!-- End Col -->
+        {%endfor%}
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Card Grid -->
+</main>
+{%endblock%}
+
+{%block plugins%}
+<script src="{%static 'assets/vendor/shufflejs/dist/shuffle.js' %}"></script>
+{%endblock%}
+
+{%block js%}
+// INITIALIZATION OF SHUFFLE
+// =======================================================
+class ShufflePorfolio {
+  constructor(element) {
+    this.element = element;
+    this.shuffle = new Shuffle(element, {
+      itemSelector: '.js-shuffle-item',
+      speed: 500
+    })
+
+    this.addFilterButtons()
+  }
+
+  addFilterButtons() {
+    const options = document.querySelector('.js-filter-options')
+    if (!options) {
+      return
+    }
+
+    const filterButtons = Array.from(options.children)
+    const onClick = this._handleFilterClick.bind(this)
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', onClick, false)
+    });
+  }
+
+  _handleFilterClick(evt) {
+    const btn = evt.currentTarget.firstElementChild
+    const isActive = btn.classList.contains('active')
+    const btnGroup = btn.getAttribute('data-group')
+
+    this._removeActiveClassFromChildren(btn.parentNode.parentNode)
+
+    let filterGroup
+    if (isActive) {
+      btn.classList.remove('active')
+      filterGroup = Shuffle.ALL_ITEMS
+    } else {
+      btn.classList.add('active')
+      filterGroup = btnGroup
+    }
+
+    this.shuffle.filter(filterGroup)
+  }
+
+  _removeActiveClassFromChildren(parent) {
+    const { children } = parent
+    for (let i = children.length - 1; i >= 0; i--) {
+      children[i].firstElementChild.classList.remove('active')
+    }
+  }
+}
+
+new ShufflePorfolio(document.querySelector('.js-shuffle'))
+{%endblock%}

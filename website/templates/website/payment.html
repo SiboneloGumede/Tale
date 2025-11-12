@@ -1,0 +1,169 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}Payment | Tale{%endblock%}
+
+{%block content%}
+<main id="content" role="main">
+    <!-- Content -->
+    <div class="container content-space-4 content-space-lg-4">
+      <div class="row">
+        <div class="col-lg-8 mb-7 mb-lg-0">
+          <h4 class="mb-3">Billing address</h4>
+            
+          <!-- Form -->
+          <form method="POST">
+            {%csrf_token%}
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label for="firstNameShopCheckout" class="form-label">First name</label>
+                {{uform.first_name}}
+                <div class="invalid-feedback">
+                  Valid first name is required.
+                </div>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-6">
+                <label for="lastNameShopCheckout" class="form-label">Last name</label>
+                {{uform.last_name}}
+                <div class="invalid-feedback">
+                  Valid last name is required.
+                </div>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-6">
+                <label for="emailShopCheckout" class="form-label">Email</label>
+                {{uform.username}}
+                <div class="invalid-feedback">
+                  Please enter a valid email address for shipping updates.
+                </div>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm-6">
+                <label for="id_phone" class="form-label">Phone number</label>
+                {{uform.phone}}
+                <div class="invalid-feedback">
+                  Valid phone number is required.
+                </div>
+              </div>
+              <!-- End Col -->
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row align-items-center">
+              <div class="col-sm-6 order-sm-1 mb-3 mb-sm-0">
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary btn-lg">Place order</button>
+                </div>
+              </div>
+              <!-- End Col -->
+
+              <div class="col-sm text-center text-sm-start">
+                <a class="link" href="{%url 'website:cart'%}">
+                  <i class="bi-chevron-left small ms-1"></i> Return to cart
+                </a>
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+          </form>
+          <!-- End Form -->
+        </div>
+        <!-- End Col -->
+
+        <div class="col-lg-4">
+          <div class="ps-lg-4">
+            <!-- Card -->
+            <div class="card card-sm shadow-sm mb-4">
+              <div class="card-body">
+                <div class="border-bottom pb-4 mb-4">
+                  <h3 class="card-header-title">Order summary</h3>
+                </div>
+
+                <form>
+
+                  {%for publication in order_details.all%}
+                  <!-- Product -->
+                  <div class="border-bottom pb-4 mb-4">
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <div class="avatar avatar-lg me-3">
+                          <img class="avatar-img" src="{{publication.publication.get_image}}" alt="Image Description">
+                          <sup class="avatar-status avatar-status-primary">1</sup>
+                        </div>
+                      </div>
+
+                      <div class="flex-grow-1">
+                        <h6>{{publication.publication.title}}</h6>
+                        
+                        <div class="d-grid">
+                          <div class="text-body">
+                            <span class="small">Author:</span>
+                            <span class="small">{{publication.publication.user.get_full_name}}</span>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Product -->
+                  {%endfor%}
+
+                  <div class="border-bottom pb-4 mb-4">
+                    <div class="d-grid gap-3">
+                      <dl class="row">
+                        <dt class="col-sm-6">Item subtotal ({{count}})</dt>
+                        <dd class="col-sm-6 text-sm-end mb-0">R{{cart.total_value}}</dd>
+                      </dl>
+                      <!-- End Row -->
+
+                      <dl class="row">
+                        <dt class="col-sm-6">Delivery</dt>
+                        <dd class="col-sm-6 text-sm-end mb-0">Free</dd>
+                      </dl>
+                      <!-- End Row -->
+                    </div>
+                  </div>
+
+                  <div class="d-grid gap-3 mb-4">
+                    <dl class="row">
+                      <dt class="col-sm-6">Estimated tax</dt>
+                      <dd class="col-sm-6 text-sm-end mb-0">R0.00</dd>
+                    </dl>
+                    <!-- End Row -->
+
+                    <dl class="row">
+                      <dt class="col-sm-6">Total</dt>
+                      <dd class="col-sm-6 text-sm-end mb-0">R{{cart.total_value}}</dd>
+                    </dl>
+                    <!-- End Row -->
+                  </div>
+
+                  <div class="d-grid">
+                    <a class="btn btn-primary btn-lg" href="#">Place Order</a>
+                  </div>
+                </form>
+              </div>
+              <!-- End Card -->
+            </div>
+
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content -->
+</main>
+{%endblock%}
+
+{%block payfast%}
+<script src="https://www.payfast.co.za/onsite/engine.js"></script> 
+<script type="text/javascript">
+  window.payfast_do_onsite_payment({"uuid":"{{identifier}}"}); 
+</script>
+{%endblock%}

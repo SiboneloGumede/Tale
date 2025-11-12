@@ -1,0 +1,239 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}Payments | Tale{%endblock%}
+
+{%block content%}
+<main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark bg-dark" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+      <div class="container content-space-3 content-space-b-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">Payments</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+                <li class="breadcrumb-item">Account</li>
+                <li class="breadcrumb-item active" aria-current="page">Payments</li>
+              </ol>
+            </nav>
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <div class="d-none d-lg-block">
+              <a class="btn btn-soft-light btn-sm" href="{%url 'website:logout'%}">Log out</a>
+            </div>
+
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content Section -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+        <div class="col-lg-3">
+          <!-- Navbar -->
+          <div class="navbar-expand-lg navbar-light">
+            <div id="sidebarNav" class="collapse navbar-collapse navbar-vertical">
+              <!-- Card -->
+              <div class="card flex-grow-1 mb-5">
+                <div class="card-body">
+                  <!-- Avatar -->
+                  <div class="d-none d-lg-block text-center mb-5">
+                    <div class="avatar avatar-xxl avatar-circle mb-3">
+                      <img class="avatar-img" src="{{user.gravatar}}" alt="Image Description">
+                    </div>
+
+                    <h4 class="card-title mb-0">{{user.get_full_name}}</h4>
+                    <p class="card-text small">@{{user.username}}</p>
+                  </div>
+                  <!-- End Avatar -->
+
+                  {%if request.user.is_admin%}
+                  <!-- Nav -->
+                  <span class="text-cap">Admin</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{%url 'website:users'%}">
+                        <i class="bi-people-fill nav-icon"></i> Users
+                      </a>
+                    </li>
+
+                    <li class="nav-item">
+                      <a class="nav-link" href="{%url 'website:subscriptions'%}">
+                        <i class="bi-person-lines-fill nav-icon"></i> Subscriptions
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{%url 'website:content'%}">
+                        <i class="bi-bookshelf nav-icon"></i> Content
+                      </a>
+                    </li>
+                    
+                  </ul>
+                  <!-- End List -->
+                  {%endif%}
+
+                  <!-- Nav -->
+					        <span class="text-cap">Account</span>
+
+					<!-- List -->
+					<ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'website:dashboard'%}">
+                <i class="bi-bar-chart-fill nav-icon"></i> Dashboard
+              </a>
+            </li>
+
+					  <li class="nav-item">
+					    <a class="nav-link" href="{%url 'website:personal-info'%}">
+					      <i class="bi-person-badge nav-icon"></i> Personal info
+					    </a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" href="{%url 'website:security'%}">
+					      <i class="bi-shield-shaded nav-icon"></i> Security
+					    </a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" href="{%url 'website:notifications'%}">
+					      <i class="bi-bell nav-icon"></i> Notifications
+					    </a>
+					  </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'website:your-ebooks'%}">
+                <i class="bi-book nav-icon"></i> Your eBooks
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'website:your-articles'%}">
+                <i class="bi-pencil-square nav-icon"></i> Your articles
+              </a>
+            </li>
+					  
+					</ul>
+					<!-- End List -->
+
+					<span class="text-cap">Purchases</span>
+
+					<!-- List -->
+					<ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+					  <li class="nav-item">
+					    <a class="nav-link" href="{%url 'website:your-orders'%}">
+					      <i class="bi-basket nav-icon"></i> Your orders
+					    </a>
+					  </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{%url 'website:your-subscriptions'%}">
+                <i class="bi-person-plus-fill nav-icon"></i> Your subscriptions
+              </a>
+            </li>
+					</ul>
+					<!-- End List -->
+
+					<span class="text-cap">Billing</span>
+
+					<!-- List -->
+					<ul class="nav nav-sm nav-tabs nav-vertical">
+					  <li class="nav-item">
+					    <a class="nav-link active" href="{%url 'website:payments'%}">
+					      <i class="bi-credit-card nav-icon"></i> Payments
+					    </a>
+					  </li>
+					  
+					</ul>
+					<!-- End List -->
+
+					<div class="d-lg-none">
+					  <div class="dropdown-divider"></div>
+
+					  <!-- List -->
+					  <ul class="nav nav-sm nav-tabs nav-vertical">
+					    <li class="nav-item">
+					      <a class="nav-link" href="{%url 'website:logout'%}">
+					        <i class="bi-box-arrow-right nav-icon"></i> Log out
+					      </a>
+					    </li>
+					  </ul>
+					  <!-- End List -->
+					</div>
+                  <!-- End Nav -->
+                </div>
+              </div>
+              <!-- End Card -->
+            </div>
+          </div>
+          <!-- End Navbar -->
+        </div>
+        <!-- End Col -->
+
+        <div class="col-lg-9">
+          <div class="d-grid gap-3 gap-lg-5">
+
+            <!-- Card -->
+            <div class="card">
+              <!-- Header -->
+              <div class="card-header">
+                <h5 class="card-header-title">Payment history</h5>
+              </div>
+              <!-- End Header -->
+
+              <!-- Table -->
+              <div class="table-responsive">
+                <table class="table table-borderless table-thead-bordered table-nowrap table-align-middle">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Amount</th>
+                      <th>Author</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  	{%for payment in payments%}
+                    <tr>
+                      <td>{{payment.date|date:'d/m/Y'}}</td>
+                      <td><span class="badge bg-soft-success text-success">Complete</span></td>
+                      <td>R{{payment.amount_locale}}</td>
+                      <td>{{payment.subscription.author.get_full_name}}</td>
+                    </tr>
+                    {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+              <!-- End Table -->
+            </div>
+            <!-- End Card -->
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content Section -->
+</main>
+{%endblock%}

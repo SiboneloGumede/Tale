@@ -1,0 +1,193 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}New {%if publication.is_article%}Article{%else%}eBook{%endif%} (Step 2) | Tale{%endblock%}
+
+{%block css%}
+<link rel="stylesheet" href="{%static 'assets/cropper/cropper.css' %}" type="text/css">
+{%endblock%}
+
+{%block content%}
+<main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark bg-dark" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+      <div class="container content-space-1 content-space-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">New {%if publication.is_article%}Article{%else%}eBook{%endif%}</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Details</li>
+                <li class="breadcrumb-item fw-bold active" aria-current="page">{%if publication.is_article%}Article{%else%}eBook{%endif%} Image</li>
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Pricing</li>
+              </ol>
+            </nav>
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="d-grid gap-3 gap-lg-5">
+            <!-- Card -->
+            <div class="card">
+              <div class="card-header border-bottom">
+                <h4 class="card-header-title">New {%if publication.is_article%}Article{%else%}eBook{%endif%} / {%if publication.is_article%}Article{%else%}eBook{%endif%} Image</h4>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body">
+                <form method="POST" id="publication-form" enctype="multipart/form-data">
+                  {%csrf_token%}
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="locationLabel" class="col-sm-3 col-form-label form-label">{%if publication.is_article%}Article{%else%}eBook{%endif%} Image</label>
+
+                    <div class="col-sm-9">
+                      <!-- Select -->
+                      <div class="tom-select-custom mb-3">
+                        {{form}}
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <div class="card-footer pt-0">
+                <div class="d-flex justify-content-between gap-3">
+                  <a class="link" href="{%url 'website:step-1' publication.pk%}">
+                    <i class="bi-chevron-left small ms-1"></i> Go back
+                  </a>
+                  {%if publication.get_image%}
+                  <a href="{%url 'website:step-3' publication.pk%}" class="btn btn-primary">Next</a>
+                  {%endif%}
+                </div>
+              </div>
+              <!-- End Footer -->
+              </form>
+            </div>
+            <!-- End Card -->
+
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content -->
+</main>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id='modalCrop'>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title h6" id="myExtraLargeModalLabel">{%if publication.is_article%}Article{%else%}eBook{%endif%} Image</h5>
+        <div class="modal-close">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+         <img src="" id="image" style="max-width: 100%;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary js-crop-and-upload">Crop and Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock%}
+
+{%block cropper%}
+<script src="{%static 'assets/js/jquery.min.js'%}"></script>
+<script src="{%static 'assets/cropper/cropper.js'%}"></script>
+<script type="text/javascript">
+
+  $(function () {
+
+      /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
+      $("#id_image").change(function () {
+        if(this.files[0].size > 1048576){
+         alert("The maximum file size allowed is 1MB");
+         this.value = "";
+        };
+
+        if (this.files && this.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $("#image").attr("src", e.target.result);
+            $("#modalCrop").modal("show");
+          }
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+
+      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+      var $image = $("#image");
+      var cropBoxData;
+      var canvasData;
+      $("#modalCrop").on("shown.bs.modal", function () {
+        $image.cropper({
+          viewMode: 1,
+          aspectRatio: 1/1,
+          minCropBoxWidth: 600,
+          minCropBoxHeight: 600,
+          ready: function () {
+            $image.cropper("setCanvasData", canvasData);
+            $image.cropper("setCropBoxData", cropBoxData);
+          }
+        });
+      }).on("hidden.bs.modal", function () {
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+        $image.cropper("destroy");
+      });
+
+    
+
+      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+      $(".js-crop-and-upload").click(function () {
+        var cropData = $image.cropper("getData");
+        $("#id_x").val(cropData["x"]);
+        $("#id_y").val(cropData["y"]);
+        $("#id_height").val(cropData["height"]);
+        $("#id_width").val(cropData["width"]);
+        $("#publication-form").submit();
+      });
+
+    });
+</script>
+{%endblock%}

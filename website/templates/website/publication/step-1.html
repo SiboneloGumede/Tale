@@ -1,0 +1,198 @@
+{%extends 'website/base.html'%}
+{%load static%}
+
+{%block title%}New {%if publication.is_article%}Article{%else%}eBook{%endif%} (Step 1) | Tale{%endblock%}
+
+{%block css%}
+<style type="text/css">
+  .django-ckeditor-widget{
+      width: 100%;
+  }
+</style>
+<link rel="stylesheet" href="{%static 'assets/vendor/tom-select/dist/css/tom-select.bootstrap5.css' %}">
+{%endblock%}
+
+{%block content%}
+<main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark bg-dark" style="background-image: url({%static 'assets/svg/components/wave-pattern-light.svg' %});">
+      <div class="container content-space-1 content-space-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">New {%if publication.is_article%}Article{%else%}eBook{%endif%}</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+                <li class="breadcrumb-item fw-bold active" aria-current="page">{%if publication.is_article%}Article{%else%}eBook{%endif%} Details</li>
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Image</li>
+                <li class="breadcrumb-item">{%if publication.is_article%}Article{%else%}eBook{%endif%} Pricing</li>
+              </ol>
+            </nav>
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+
+        <div class="col-lg-12">
+          <div class="d-grid gap-3 gap-lg-5">
+            <!-- Card -->
+            <div class="card">
+              <div class="card-header border-bottom">
+                <h4 class="card-header-title">New {%if publication.is_article%}Article{%else%}eBook{%endif%} / {%if publication.is_article%}Article{%else%}eBook{%endif%} Details</h4>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                  {%csrf_token%}
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="id_title" class="col-sm-12 col-form-label form-label">Title</label>
+
+                    <div class="col-sm-12">
+                      {{form.title}}
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="id_blurb" class="col-sm-12 col-form-label form-label">Blurb/Teaser</label>
+
+                    <div class="col-sm-12">
+                      <textarea name="blurb" id="id_blurb" class="form-control" placeholder="Blurb/Teaser" rows="4" required>{{publication.blurb}}</textarea>
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  {%if publication.is_article%}
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="id_blurb" class="col-sm-12 col-form-label form-label">Body</label>
+
+                    <div class="col-sm-12">
+                      {{form.body}}
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  {%else%}
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="id_blurb" class="col-sm-12 col-form-label form-label">Upload eBook</label>
+
+                    <div class="col-sm-12">
+                      {{form.upload}}
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  {%endif%}
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="id_blurb" class="col-sm-12 col-form-label form-label">Tags</label>
+
+                    <div class="col-sm-12">
+                      <!-- Select -->
+                      <div class="tom-select-custom">
+                        <select class="js-select form-select" name="tags" id="id_tags" autocomplete="off" multiple
+                          data-hs-tom-select-options='{
+                            "create": true,
+                            "placeholder": "Create your publication tags..."
+                          }' required>
+                          {%for tag in tags%}
+                          <option value="{{tag}}" selected>{{tag}}</option>
+                          {%endfor%}
+                          {%for other_tag in other_tags%}
+                          <option value="{{other_tag}}">{{other_tag}}</option>
+                          {%endfor%}
+                        </select>
+                      </div>
+                      <!-- End Select -->
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+
+              
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+              <div class="card-footer pt-0">
+                <div class="d-flex justify-content-between gap-3">
+                  <a class="btn btn-white" href="{%url 'website:ajax-delete-publication' publication.pk%}">Delete</a>
+                  <button type="submit" class="btn btn-primary">Next</button>
+                </div>
+              </div>
+              <!-- End Footer -->
+            </form>
+            </div>
+            <!-- End Card -->
+
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content -->
+</main>
+{%if not publication.is_article%}
+<script type="text/javascript">
+  document.getElementById("id_upload").setAttribute("accept", ".pdf,.epub"); 
+</script>
+{%endif%}
+{%endblock%}
+
+{%block front%}
+<script type="text/javascript" src="{% static 'assets/ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/ckeditor/ckeditor/ckeditor.js' %}"></script>
+{%endblock%}
+
+{%block plugins%}
+<script src="{%static 'assets/vendor/tom-select/dist/js/tom-select.complete.min.js' %}"></script>
+{%endblock%}
+
+{%block js%}
+// INITIALIZATION OF SELECT
+// =======================================================
+HSCore.components.HSTomSelect.init('.js-select', {
+  render: {
+    'option': function(data, escape) {
+      return data.optionTemplate || `<div>${data.text}</div>>`
+    },
+    'item': function(data, escape) {
+      return data.optionTemplate || `<div>${data.text}</div>>`
+    }
+  }
+})
+{%endblock%}

@@ -1,0 +1,68 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>Error 403 | Tale</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{%static 'assets/img/tale/tale-logo.png'%}">
+
+  <!-- Font -->
+  <link href="@@vars.googleFont" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <!-- bundlecss:vendor [@@autopath] -->
+  <link rel="stylesheet" href="{%static 'assets/vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+
+  <!-- CSS Front Template -->
+  <!-- bundlecss:theme [@@autopath] @@vars.version -->
+  <link rel="stylesheet" href="{%static 'assets/css/theme.min.css' %}">
+</head>
+
+<body class="d-flex flex-column justify-content-center align-items-center h-100">
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="navbar navbar-expand navbar-light navbar-absolute-top">
+    <div class="container">
+      <nav class="navbar-nav-wrap">
+        <!-- Default Logo -->
+        <a class="navbar-brand" href="{%url 'website:landing'%}" aria-label="Front">
+          <img class="navbar-brand-logo" src="{%static 'assets/img/tale/tale-logo.png' %}" alt="Logo">
+        </a>
+        <!-- End Default Logo -->
+      </nav>
+    </div>
+  </header>
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main">
+    <!-- Content -->
+    <div class="container text-center">
+      <div class="mb-3">
+        <img class="img-fluid" src="{%static 'assets/img/illustrations/unlock.png' %}" alt="Image Description" style="width: 18rem;">
+      </div>
+
+      <div class="mb-4">
+        <p class="fs-4 mb-0">Sorry, something has gone wrong on the website's server.</p>
+        <p class="fs-4">Our engineers have been notified, and the issue will be resolved shortly.</p>
+      </div>
+
+      <a class="btn btn-primary" href="{%url 'website:landing'%}">Go back home</a>
+    </div>
+    <!-- End Content -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <!-- JS Global Compulsory @@deleteLine:build -->
+  <script src="{%static 'assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <!-- bundlejs:theme [@@autopath] -->
+  <script src="{%static 'assets/js/theme.min.js' %}"></script>
+</body>
+</html>
